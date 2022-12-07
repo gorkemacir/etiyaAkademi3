@@ -15,9 +15,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @IdClass(ProductCategoryId.class)
-public class ProductCategory implements Serializable {
+public class ProductCategory  {
 
-    private static final long serialVersionUID = 1L;
     @ManyToOne
     @JoinColumn(name = "product_id",insertable = false, updatable = false)
     private Product product;

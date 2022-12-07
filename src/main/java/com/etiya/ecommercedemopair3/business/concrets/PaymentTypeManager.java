@@ -1,6 +1,8 @@
 package com.etiya.ecommercedemopair3.business.concrets;
 
 import com.etiya.ecommercedemopair3.business.abstracts.PaymentTypeService;
+import com.etiya.ecommercedemopair3.business.dtos.requests.paymentType.AddPaymentTypeRequest;
+import com.etiya.ecommercedemopair3.business.dtos.responses.paymentType.AddPaymentTypeResponse;
 import com.etiya.ecommercedemopair3.entities.concrets.PaymentType;
 import com.etiya.ecommercedemopair3.repository.abstracts.PaymentTypeRepository;
 import lombok.AllArgsConstructor;
@@ -31,5 +33,15 @@ public class PaymentTypeManager implements PaymentTypeService {
     @Override
     public PaymentType getByDescription(String description) {
         return paymentTypeRepository.findPaymentTypeByDescription(description);
+    }
+
+    @Override
+    public AddPaymentTypeResponse addPaymentType(AddPaymentTypeRequest addPaymentTypeRequest) {
+        PaymentType paymentType=new PaymentType();
+        paymentType.setDescription(addPaymentTypeRequest.getDescription());
+        paymentType.setName(addPaymentTypeRequest.getName());
+        PaymentType savedPaymentType=paymentTypeRepository.save(paymentType);
+        AddPaymentTypeResponse response=new AddPaymentTypeResponse(savedPaymentType.getId(),savedPaymentType.getDescription(),savedPaymentType.getName());
+        return  response;
     }
 }
