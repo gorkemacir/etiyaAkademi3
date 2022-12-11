@@ -9,6 +9,6 @@ import java.util.Locale;
 
 public interface CategoryService {
     List<Category> getAll();
-
+    Category getById(int id);
     AddCategoryResponse addCategory(AddCategoryRequest addCategoryRequest);
 }

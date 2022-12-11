@@ -1,16 +1,32 @@
 package com.etiya.ecommercedemopair3.business.concrets;
 
-import com.etiya.ecommercedemopair3.business.abstracts.AddressService;
-import com.etiya.ecommercedemopair3.entities.concrets.Address;
-import com.etiya.ecommercedemopair3.repository.abstracts.AddressRepository;
+import com.etiya.ecommercedemopair3.business.abstracts.*;
+import com.etiya.ecommercedemopair3.business.constants.Messages;
+import com.etiya.ecommercedemopair3.business.dtos.requests.address.AddAddressRequest;
+import com.etiya.ecommercedemopair3.business.dtos.responses.address.AddAddressResponse;
+import com.etiya.ecommercedemopair3.core.util.mapping.ModelMapperService;
+import com.etiya.ecommercedemopair3.entities.concrets.*;
+import com.etiya.ecommercedemopair3.repository.abstracts.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class AddressManager implements AddressService {
-   private AddressRepository addressRepository;
+    private AddressRepository addressRepository;
+    private CityService cityService;
+    private CityRepository cityRepository;
+    private CountryService countryService;
+    private CountryRepository countryRepository;
+    private StreetService streetService;
+    private StreetRepository streetRepository;
+    private CustomerService customerService;
+    private CustomerRepository customerRepository;
+
+    private ModelMapperService modelMapperService;
+
 
     @Override
     public List<Address> getAll() {
@@ -31,5 +47,61 @@ public class AddressManager implements AddressService {
     public Address findByDescription(String description) {
         return addressRepository.findByDescription(description);
     }
+
+    @Override
+    public AddAddressResponse addAddress(AddAddressRequest addAddressRequest) {
+//        Address address = new Address();
+//        address.setTitle(addAddressRequest.getTitle());
+//        address.setDescription(addAddressRequest.getDescription());
+        checkIfCityExists(addAddressRequest.getCityId());
+//        City city = cityService.getById(addAddressRequest.getCityId());
+//        address.setCity(city);
+        checkIfCountryExists(addAddressRequest.getCountryId());
+//        Country country = countryService.getById(addAddressRequest.getCountryId());
+//        address.setCountry(country);
+        checkIfStreetExists(addAddressRequest.getStreetId());
+//        Street street = streetService.getById(addAddressRequest.getStreetId());
+//        address.setStreet(street);
+        checkIfCustomerExists(addAddressRequest.getCustomerId());
+//        Customer customer = customerService.getById(addAddressRequest.getCustomerId());
+//        address.setCustomer(customer);
+
+        Address address= modelMapperService.getMapperRequest().map(addAddressRequest,Address.class);
+
+
+        Address savedAddress = addressRepository.save(address);
+        AddAddressResponse response= modelMapperService.getMapperResponse().map(savedAddress,AddAddressResponse.class);
+//        AddAddressResponse response = new AddAddressResponse(savedAddress.getId(), savedAddress.getTitle(), savedAddress.getDescription(), savedAddress.getCity().getId(),savedAddress.getCountry().getId(),savedAddress.getStreet().getId(),savedAddress.getCustomer().getId());
+        return response;
+    }
+
+    private void checkIfCityExists(int id){
+        boolean isExists = cityRepository.existsById(id);
+        if(!isExists) {
+            throw new RuntimeException(Messages.City.CityNotExistWithId);
+        }
+    }
+
+    private void checkIfCountryExists(int id){
+        boolean isExists = countryRepository.existsById(id);
+        if(!isExists) {
+            throw new RuntimeException(Messages.Country.CountryNotExistWithId);
+        }
+    }
+
+    private void checkIfStreetExists(int id){
+        boolean isExists = streetRepository.existsById(id);
+        if(!isExists) {
+            throw new RuntimeException(Messages.Street.StreetNotExistWithId);
+        }
+    }
+
+    private void checkIfCustomerExists(int id){
+        boolean isExists = customerRepository.existsById(id);
+        if(!isExists) {
+            throw new RuntimeException(Messages.Customer.CustomerNotExistWithId);
+        }
+    }
+
 
 }

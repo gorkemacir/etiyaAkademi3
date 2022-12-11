@@ -1,6 +1,7 @@
 package com.etiya.ecommercedemopair3.api.controllers;
 
 import com.etiya.ecommercedemopair3.business.abstracts.IndividualCustomerService;
+import com.etiya.ecommercedemopair3.business.constants.Paths;
 import com.etiya.ecommercedemopair3.business.dtos.requests.city.AddCityRequest;
 import com.etiya.ecommercedemopair3.business.dtos.requests.individualCustomer.AddIndividualCustomerRequest;
 import com.etiya.ecommercedemopair3.business.dtos.responses.city.AddCityResponse;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/IndividualCustomer")
+@RequestMapping(Paths.apiPrefix+"individualCustomers")
 @AllArgsConstructor
 public class IndividualCustomersController {
     IndividualCustomerService individualCustomerService;

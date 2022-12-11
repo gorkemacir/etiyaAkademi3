@@ -1,16 +1,22 @@
 package com.etiya.ecommercedemopair3.api.controllers;
 
 import com.etiya.ecommercedemopair3.business.abstracts.AddressService;
+import com.etiya.ecommercedemopair3.business.constants.Paths;
+import com.etiya.ecommercedemopair3.business.dtos.requests.address.AddAddressRequest;
+import com.etiya.ecommercedemopair3.business.dtos.responses.address.AddAddressResponse;
 import com.etiya.ecommercedemopair3.entities.concrets.Address;
 import com.etiya.ecommercedemopair3.entities.concrets.Product;
 import lombok.AllArgsConstructor;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/Addresses")
+@RequestMapping(Paths.apiPrefix+"addresses")
 @AllArgsConstructor
 public class AddressesController {
 
@@ -31,4 +37,8 @@ public class AddressesController {
     @GetMapping("/description")
     public Address findByDescription(@RequestParam("description") String description){return addressService.findByDescription(description);}
 
+    @PostMapping("/add")
+    public ResponseEntity<AddAddressResponse> addAddress(@RequestBody @Valid AddAddressRequest addAddressRequest) {
+        return new ResponseEntity<AddAddressResponse >(addressService.addAddress(addAddressRequest), HttpStatus.CREATED);
+    }
 }
