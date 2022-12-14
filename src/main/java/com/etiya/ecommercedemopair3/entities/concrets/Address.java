@@ -7,6 +7,13 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import javax.persistence.*;
+
 @Entity
 @Table(name="addresses")
 @Getter
@@ -26,14 +33,6 @@ public class Address {
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
-
-    @ManyToOne
-    @JoinColumn(name = "city_id")
-    private City city;
-
-    @ManyToOne
-    @JoinColumn(name = "country_id")
-    private Country country;
 
     @ManyToOne
     @JoinColumn(name = "street_id")

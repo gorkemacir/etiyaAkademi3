@@ -1,5 +1,6 @@
 package com.etiya.ecommercedemopair3.entities.concrets;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,4 +23,9 @@ public class City {
 
     @Column(name = "name")
     private String name;
+
+    @ManyToOne
+    @JoinColumn(name = "country_id")
+    @JsonIgnoreProperties
+    private Country country;
 }

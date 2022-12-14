@@ -9,6 +9,15 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import javax.persistence.*;
+import java.util.List;
+
 @Entity
 @Table(name = "categories")
 @Getter
@@ -24,7 +33,7 @@ public class Category {
     @Column(name = "name")
     private String name;
 
-    // @OneToMany(mappedBy = "category")
-    // @JsonIgnoreProperties("category")
-    // private List<ProductCategory> productCategories;
+    @OneToMany(mappedBy = "category")
+    @JsonBackReference
+    List<ProductCategory> productCategories;
 }
