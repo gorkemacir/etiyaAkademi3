@@ -17,7 +17,7 @@ public class AddProductRequest {
     @Size(min = 3, max = 50)
     private String name;
     @Min(value = 1)
-    private double unit_price;
+    private double unitPrice;
     @Min(value = 0)
     private int stock;
 }

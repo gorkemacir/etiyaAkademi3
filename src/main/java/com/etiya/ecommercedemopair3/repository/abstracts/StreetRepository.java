@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface StreetRepository extends JpaRepository<Street, Integer> {
     boolean existsById(int id);
-    @Query("select new com.etiya.ecommercedemo3.business.dtos.response.street.GetAllStreetsResponse" +
+    @Query("select new com.etiya.ecommercedemopair3.business.dtos.responses.street.GetAllStreetsResponse" +
             "(s.id,s.name,ci.name) from Street s inner join s.city ci")
     List<GetAllStreetsResponse> getAllDto();
 }

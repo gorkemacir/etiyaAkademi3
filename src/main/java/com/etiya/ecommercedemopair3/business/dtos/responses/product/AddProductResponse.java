@@ -12,6 +12,6 @@ import lombok.Setter;
 public class AddProductResponse {
     private  int productId;
     private String name;
-    private double unit_price;
+    private double unitPrice;
     private int stock;
 }
