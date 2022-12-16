@@ -1,34 +1,58 @@
 package com.etiya.ecommercedemopair3.business.concrets;
 
 import com.etiya.ecommercedemopair3.business.abstracts.StreetService;
+import com.etiya.ecommercedemopair3.business.constants.Messages;
 import com.etiya.ecommercedemopair3.business.dtos.requests.street.AddStreetRequest;
 import com.etiya.ecommercedemopair3.business.dtos.responses.street.AddStreetResponse;
+import com.etiya.ecommercedemopair3.business.dtos.responses.street.GetAllStreetsResponse;
+import com.etiya.ecommercedemopair3.core.util.exceptions.BusinessException;
 import com.etiya.ecommercedemopair3.core.util.mapping.ModelMapperService;
+import com.etiya.ecommercedemopair3.core.util.results.DataResult;
+import com.etiya.ecommercedemopair3.core.util.results.SuccessDataResult;
 import com.etiya.ecommercedemopair3.entities.concrets.Street;
+import com.etiya.ecommercedemopair3.repository.abstracts.CityRepository;
 import com.etiya.ecommercedemopair3.repository.abstracts.StreetRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class StreetManager implements StreetService {
     private StreetRepository streetRepository;
-
     private ModelMapperService modelMapperService;
+    private CityRepository cityRepository;
 
     @Override
-    public Street getById(int id) {
-        return streetRepository.findById(id).orElseThrow();
+    public DataResult<Street> getById(int id) {
+        Street response = streetRepository.findById(id).orElseThrow();
+        return new SuccessDataResult<Street>(response, Messages.Street.streetGetByIdSuccessMessage);
     }
 
     @Override
-    public AddStreetResponse addStreet(AddStreetRequest addStreetRequest) {
+    public DataResult<AddStreetResponse> addStreet(AddStreetRequest addStreetRequest) {
 //        Street street = new Street();
 //        street.setName(addStreetRequest.getName());
+        checkIfCityExists(addStreetRequest.getCityId());
         Street street=modelMapperService.getMapperRequest().map(addStreetRequest,Street.class);
         Street savedStreet = streetRepository.save(street);
+//        AddStreetResponse response = new AddStreetResponse(savedStreet.getId(),
+//                savedStreet.getName());
         AddStreetResponse response=modelMapperService.getMapperResponse().map(savedStreet,AddStreetResponse.class);
-        //AddStreetResponse response = new AddStreetResponse(savedStreet.getId(),savedStreet.getName());
-        return response;
+        return new SuccessDataResult<AddStreetResponse>(response, Messages.Street.streetAddSuccessMessage);
+    }
+
+    @Override
+    public DataResult<List<GetAllStreetsResponse>> getAllDto() {
+        List<GetAllStreetsResponse> response= streetRepository.getAllDto();
+        return new SuccessDataResult<List<GetAllStreetsResponse>>(response,"Sokak listelendi");
+    }
+
+    private void checkIfCityExists(int id){
+        boolean isExists = cityRepository.existsById(id);
+        if(!isExists) {
+            throw new BusinessException(Messages.City.CityNotExistWithId);
+        }
     }
 }

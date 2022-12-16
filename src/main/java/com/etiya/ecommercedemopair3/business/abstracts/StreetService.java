@@ -2,8 +2,12 @@ package com.etiya.ecommercedemopair3.business.abstracts;
 
 import com.etiya.ecommercedemopair3.business.dtos.requests.street.AddStreetRequest;
 import com.etiya.ecommercedemopair3.business.dtos.responses.street.AddStreetResponse;
+import com.etiya.ecommercedemopair3.business.dtos.responses.street.GetAllStreetsResponse;
 import com.etiya.ecommercedemopair3.core.util.results.DataResult;
 import com.etiya.ecommercedemopair3.entities.concrets.Street;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 public interface StreetService {
     DataResult<Street> getById(int id);

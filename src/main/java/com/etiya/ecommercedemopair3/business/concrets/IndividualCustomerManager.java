@@ -1,9 +1,12 @@
 package com.etiya.ecommercedemopair3.business.concrets;
 
 import com.etiya.ecommercedemopair3.business.abstracts.IndividualCustomerService;
+import com.etiya.ecommercedemopair3.business.constants.Messages;
 import com.etiya.ecommercedemopair3.business.dtos.requests.individualCustomer.AddIndividualCustomerRequest;
 import com.etiya.ecommercedemopair3.business.dtos.responses.individualCustomer.AddIndividualCustomerResponse;
 import com.etiya.ecommercedemopair3.core.util.mapping.ModelMapperService;
+import com.etiya.ecommercedemopair3.core.util.results.DataResult;
+import com.etiya.ecommercedemopair3.core.util.results.SuccessDataResult;
 import com.etiya.ecommercedemopair3.entities.concrets.IndividualCustomer;
 import com.etiya.ecommercedemopair3.repository.abstracts.IndividualCustomerRepository;
 import lombok.AllArgsConstructor;
@@ -14,46 +17,39 @@ import java.util.List;
 @AllArgsConstructor
 public class IndividualCustomerManager implements IndividualCustomerService {
     private IndividualCustomerRepository individualCustomerRepository;
-
     private ModelMapperService modelMapperService;
 
     @Override
-    public List<IndividualCustomer> getAll() {
-        return individualCustomerRepository.findAll();
+    public DataResult<List<IndividualCustomer>> getAll() {
+        List<IndividualCustomer> response = individualCustomerRepository.findAll();
+        return new SuccessDataResult<List<IndividualCustomer>>(response, Messages.IndividualCustomer.individualCustomerGetByIdSuccessMessage);
     }
 
     @Override
-    public IndividualCustomer getById(int id) {
-        return individualCustomerRepository.findById(id).orElseThrow();
+    public DataResult<IndividualCustomer> getById(int id) {
+        IndividualCustomer response = individualCustomerRepository.findById(id).orElseThrow();
+        return new SuccessDataResult<IndividualCustomer>(response, Messages.IndividualCustomer.individualCustomerGetByIdSuccessMessage) ;
     }
 
     @Override
-    public IndividualCustomer getIndividualCustomerByNationalIdentity(String nationalIdentity) {
-        return individualCustomerRepository.findIndividualCustomerBynationalIdentity(nationalIdentity);
+    public DataResult<IndividualCustomer> getIndividualCustomerBynationalIdentity(String nationalIdentity) {
+        IndividualCustomer response = individualCustomerRepository.findIndividualCustomerBynationalIdentity(nationalIdentity);
+        return new SuccessDataResult<IndividualCustomer>(response,Messages.IndividualCustomer.individualCustomerGetByIdentityNumberSuccessMessage);
     }
 
     @Override
-    public List<IndividualCustomer> getIndividualCustomerByFirstName(String firstName) {
-        return individualCustomerRepository.findIndividualCustomerByFirstName(firstName);
+    public DataResult<List<IndividualCustomer>> getIndividualCustomerByFirstName(String firstName) {
+        List<IndividualCustomer> response = individualCustomerRepository.findIndividualCustomerByFirstName(firstName);
+        return new  SuccessDataResult<List<IndividualCustomer>>(response, Messages.IndividualCustomer.individualCustomerGetByFirstNameSuccessMessage);
     }
 
     @Override
-    public AddIndividualCustomerResponse addIndividualCustomer(AddIndividualCustomerRequest addIndividualCustomerRequest) {
-//        IndividualCustomer individualCustomer = new IndividualCustomer();
-//        individualCustomer.setFirstName(addIndividualCustomerRequest.getFirstName());
-//        individualCustomer.setLastName(addIndividualCustomerRequest.getLastName());
-//        individualCustomer.setNationalIdentity(addIndividualCustomerRequest.getNationalIdentity());
-//        individualCustomer.setCustomerNumber(addIndividualCustomerRequest.getCustomerNumber());
-
+    public DataResult<AddIndividualCustomerResponse> addIndividualCustomer(AddIndividualCustomerRequest addIndividualCustomerRequest) {
         IndividualCustomer individualCustomer=modelMapperService.getMapperRequest().map(addIndividualCustomerRequest,IndividualCustomer.class);
 
         IndividualCustomer savedIndividualCustomer = individualCustomerRepository.save(individualCustomer);
 
         AddIndividualCustomerResponse response=modelMapperService.getMapperResponse().map(savedIndividualCustomer,AddIndividualCustomerResponse.class);
-
-        //AddIndividualCustomerResponse response = new AddIndividualCustomerResponse(savedIndividualCustomer.getId(), savedIndividualCustomer.getFirstName(), savedIndividualCustomer.getLastName(), savedIndividualCustomer.getNationalIdentity());
-
-
-        return response;
+        return new SuccessDataResult<AddIndividualCustomerResponse>(response,Messages.IndividualCustomer.individualCustomerAddSuccessMessage);
     }
 }

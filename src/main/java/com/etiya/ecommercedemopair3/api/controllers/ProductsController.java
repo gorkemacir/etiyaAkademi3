@@ -4,8 +4,10 @@ import com.etiya.ecommercedemopair3.business.abstracts.ProductService;
 import com.etiya.ecommercedemopair3.business.constants.Paths;
 import com.etiya.ecommercedemopair3.business.dtos.requests.product.AddProductRequest;
 import com.etiya.ecommercedemopair3.business.dtos.responses.product.AddProductResponse;
+import com.etiya.ecommercedemopair3.business.dtos.responses.product.GetProductResponse;
+import com.etiya.ecommercedemopair3.core.util.results.DataResult;
 import com.etiya.ecommercedemopair3.entities.concrets.Product;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,25 +16,45 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping(Paths.apiPrefix+"products")
-@AllArgsConstructor
+@RequestMapping(Paths.apiPrefix + "products")
 public class ProductsController {
-    //dependency incejtion
-    ProductService productService;
+    @Autowired
+    private ProductService productService;
+
+
+    public ProductsController(ProductService productService) {
+        this.productService = productService;
+    }
 
     @GetMapping("/getAll")
-    public List<Product> getAll(){
+    public DataResult<List<Product>> getAll(){
         return productService.getAll();
     }
 
-    @GetMapping("{id}")
-    public Product getById(@PathVariable int id){
+    @GetMapping("/getById")
+    public DataResult<Product> getById(@RequestParam("id") int id){
         return productService.getById(id);
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<AddProductResponse> addProduct(@RequestBody @Valid AddProductRequest addProductRequest)
-    {
-        return  new ResponseEntity<AddProductResponse>(productService.addProduct(addProductRequest), HttpStatus.CREATED);
+    @GetMapping("/getByStockGreaterThan")
+    public DataResult<List<Product>> getAllByStock(@RequestParam("stock") int stock){
+        return productService.getAllByStockGreaterThan(stock);
     }
+
+    @GetMapping("/getByName")
+    public DataResult<Product> getByName(@RequestParam("name") String name){
+        return productService.getByName(name);
+    }
+    @PostMapping("/add")
+    public ResponseEntity<DataResult<AddProductResponse>> addProduct(@RequestBody @Valid AddProductRequest addProductRequest)
+    {
+        return  new ResponseEntity<>(productService.addProduct(addProductRequest), HttpStatus.CREATED);
+    }
+
+    @GetMapping("getProductsByCategory")
+    public DataResult<List<GetProductResponse>> getProductsByCategoryId(int identity){
+        return productService.getProductsByCategoryId(identity);
+    }
+
+
 }

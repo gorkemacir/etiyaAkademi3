@@ -35,6 +35,7 @@ public class EcommerceDemoPair3Application {
 	}
 	@Bean
 	public ModelMapper getModelMapper(){
+
 		return new ModelMapper();
 	}
 
@@ -74,9 +75,5 @@ public class EcommerceDemoPair3Application {
 		AcceptHeaderLocaleResolver localeResolver=new AcceptHeaderLocaleResolver();
 		localeResolver.setDefaultLocale(Locale.US);
 		return localeResolver;
-	}
-	@Bean
-	public ModelMapper getModelMapper(){
-		return new ModelMapper();
 	}
 }

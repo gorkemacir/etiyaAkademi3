@@ -1,11 +1,16 @@
 package com.etiya.ecommercedemopair3.business.concrets;
 
 import com.etiya.ecommercedemopair3.business.abstracts.CityService;
+import com.etiya.ecommercedemopair3.business.constants.Messages;
 import com.etiya.ecommercedemopair3.business.dtos.requests.city.AddCityRequest;
 import com.etiya.ecommercedemopair3.business.dtos.responses.city.AddCityResponse;
+import com.etiya.ecommercedemopair3.core.util.exceptions.BusinessException;
 import com.etiya.ecommercedemopair3.core.util.mapping.ModelMapperService;
+import com.etiya.ecommercedemopair3.core.util.results.DataResult;
+import com.etiya.ecommercedemopair3.core.util.results.SuccessDataResult;
 import com.etiya.ecommercedemopair3.entities.concrets.City;
 import com.etiya.ecommercedemopair3.repository.abstracts.CityRepository;
+import com.etiya.ecommercedemopair3.repository.abstracts.CountryRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,23 +18,32 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class CityManager implements CityService {
     private CityRepository cityRepository;
-
     private ModelMapperService modelMapperService;
+    private CountryRepository countryRepository;
 
     @Override
-    public City getById(int id) {
-        return cityRepository.findById(id).orElseThrow();
+    public DataResult<City> getById(int id) {
+        City response=  cityRepository.findById(id).orElseThrow();
+        return new SuccessDataResult<City>(response, Messages.City.CityGetById);
     }
 
     @Override
-    public AddCityResponse addCity(AddCityRequest addCityRequest) {
+    public DataResult<AddCityResponse> addCity(AddCityRequest addCityRequest) {
 //        City city = new City();
 //        city.setName(addCityRequest.getName());
-        City city= modelMapperService.getMapperRequest().map(addCityRequest,City.class);
+        checkIfCountryExists(addCityRequest.getCountryId());
+        City city = modelMapperService.getMapperRequest().map(addCityRequest, City.class);
         City savedCity = cityRepository.save(city);
-        AddCityResponse response=modelMapperService.getMapperResponse().map(savedCity,AddCityResponse.class);
 //        AddCityResponse response = new AddCityResponse(savedCity.getId(), savedCity.getName());
-        return response;
+        AddCityResponse response = modelMapperService.getMapperResponse().map(savedCity, AddCityResponse.class);
+        return new SuccessDataResult<AddCityResponse>(response, Messages.City.CityAddSuccessMessage);
+    }
+    private void checkIfCountryExists(int id) {
+        boolean isExists = countryRepository.existsById(id);
+        if (!isExists) {
+            //business exception
+            throw new BusinessException(Messages.Country.CountryNotExistWithId);
+        }
     }
 }
 

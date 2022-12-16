@@ -12,4 +12,5 @@ import lombok.Setter;
 public class AddStreetResponse {
     private int id;
     private String name;
+    private int cityId;
 }

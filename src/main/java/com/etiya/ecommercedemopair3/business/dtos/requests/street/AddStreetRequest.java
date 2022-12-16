@@ -11,4 +11,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class AddStreetRequest {
     private String name;
+    private int cityId;
 }

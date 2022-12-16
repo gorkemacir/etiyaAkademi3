@@ -1,19 +1,16 @@
-package com.etiya.ecommercedemopair3.business.dtos.responses.city;
+package com.etiya.ecommercedemopair3.business.dtos.responses.street;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AddCityResponse {
-
+@Getter
+@Setter
+public class GetAllStreetsResponse {
     private int id;
-
     private String name;
-
-    private int countryId;
+    private String cityName;
 }

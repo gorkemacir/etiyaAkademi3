@@ -14,4 +14,5 @@ public class AddIndividualCustomerResponse {
     private String firstName;
     private String lastName;
     private String nationalIdentity;
+    private int customerNumber;
 }

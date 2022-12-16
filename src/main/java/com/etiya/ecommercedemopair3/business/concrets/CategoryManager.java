@@ -4,7 +4,10 @@ import com.etiya.ecommercedemopair3.business.abstracts.CategoryService;
 import com.etiya.ecommercedemopair3.business.constants.Messages;
 import com.etiya.ecommercedemopair3.business.dtos.requests.category.AddCategoryRequest;
 import com.etiya.ecommercedemopair3.business.dtos.responses.category.AddCategoryResponse;
+import com.etiya.ecommercedemopair3.core.util.exceptions.BusinessException;
 import com.etiya.ecommercedemopair3.core.util.mapping.ModelMapperService;
+import com.etiya.ecommercedemopair3.core.util.results.DataResult;
+import com.etiya.ecommercedemopair3.core.util.results.SuccessDataResult;
 import com.etiya.ecommercedemopair3.entities.concrets.Category;
 import com.etiya.ecommercedemopair3.repository.abstracts.CategoryRepository;
 import lombok.AllArgsConstructor;
@@ -16,38 +19,37 @@ import java.util.List;
 @AllArgsConstructor
 public class CategoryManager implements CategoryService {
     private CategoryRepository categoryRepository;
-
     private ModelMapperService modelMapperService;
-
     @Override
-    public List<Category> getAll() {
-        return categoryRepository.findAll();
+    public DataResult<List<Category>> getAll() {
+        List<Category> response = categoryRepository.findAll();
+        return new SuccessDataResult<List<Category>>(response, Messages.Category.CategoryGetAllSuccessMessage);
     }
 
     @Override
-    public Category getById(int id) {
-        return categoryRepository.findById(id).orElseThrow();
+    public DataResult<Category> getById(int id) {
+        Category response = categoryRepository.findById(id).orElseThrow();
+        return new SuccessDataResult<Category>(response,Messages.Category.CategoryGetByIdSuccessMessage);
     }
 
     @Override
-    public AddCategoryResponse addCategory(AddCategoryRequest addCategoryRequest) {
+    public DataResult<AddCategoryResponse> addCategory(AddCategoryRequest addCategoryRequest) {
 //        Category category = new Category();
 //        category.setName(addCategoryRequest.getName());
-        categoryCanNotExistWithSameName(addCategoryRequest.getName());
-
-        Category category=modelMapperService.getMapperRequest().map(addCategoryRequest,Category.class);
+//        categoryCanNotExistWithSameName(addCategoryRequest.getName());
+        Category category = modelMapperService.getMapperRequest().map(addCategoryRequest, Category.class);
         Category savedCategory = categoryRepository.save(category);
-
-        AddCategoryResponse response= modelMapperService.getMapperResponse().map(savedCategory,AddCategoryResponse.class);
+//        AddCategoryResponse response =
 //                new AddCategoryResponse(savedCategory.getId(), savedCategory.getName());
-        return response;
+        AddCategoryResponse response=modelMapperService.getMapperResponse().map(savedCategory,AddCategoryResponse.class);
+        return new SuccessDataResult<AddCategoryResponse>(response,Messages.Category.CategoryAddSuccessMessage);
     }
 
     private void categoryCanNotExistWithSameName(String name){
         // Exception fırlatma
         boolean isExists = categoryRepository.existsCategoryByName(name);
-        if(isExists)
-            throw new RuntimeException(Messages.Category.CategoryExistWithSameName);
+        if(!isExists)
+            throw new BusinessException(Messages.Category.CategoryExistWithSameName);
     }
 
 }
