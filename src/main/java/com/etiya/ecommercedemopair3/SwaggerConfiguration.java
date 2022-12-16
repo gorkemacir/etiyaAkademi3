@@ -13,13 +13,14 @@ import org.springframework.web.method.HandlerMethod;
 public class SwaggerConfiguration {
     @Bean
     public OperationCustomizer customGlobalHeaders(){
-        return(Operation operation, HandlerMethod  handlerMethod) -> {
+        return (Operation operation, HandlerMethod handlerMethod) -> {
             Parameter headerParameter = new Parameter()
                     .in(ParameterIn.HEADER.toString())
                     .schema(new StringSchema())
                     .name("Accept-Language")
-                    .description("Multi dil desteği")
+                    .description("Bu alan multi-dil desteği getirilmesi adına kullanılmaktadır. Opsiyoneldir.")
                     .required(false);
+
             operation.addParametersItem(headerParameter);
 
             return operation;

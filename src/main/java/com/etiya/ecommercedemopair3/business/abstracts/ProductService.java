@@ -5,6 +5,9 @@ import com.etiya.ecommercedemopair3.business.dtos.responses.product.GetProductRe
 import com.etiya.ecommercedemopair3.core.util.results.DataResult;
 import com.etiya.ecommercedemopair3.entities.concrets.Product;
 import com.etiya.ecommercedemopair3.business.dtos.requests.product.AddProductRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 
 import java.util.List;
@@ -16,4 +19,7 @@ public interface ProductService {
     DataResult<Product> getByName(String name);
     DataResult<AddProductResponse> addProduct(AddProductRequest addProductRequest);
     DataResult<List<GetProductResponse>> getProductsByCategoryId(int identity);
+    Page<Product> findAllWithPagination(Pageable pageable);
+
+    Slice<Product> findAllWithSlice(Pageable pageable);
 }

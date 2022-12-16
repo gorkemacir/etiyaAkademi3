@@ -7,12 +7,17 @@ import com.etiya.ecommercedemopair3.business.dtos.responses.street.AddStreetResp
 import com.etiya.ecommercedemopair3.business.dtos.responses.street.GetAllStreetsResponse;
 import com.etiya.ecommercedemopair3.core.util.exceptions.BusinessException;
 import com.etiya.ecommercedemopair3.core.util.mapping.ModelMapperService;
+import com.etiya.ecommercedemopair3.core.util.messages.MessageSourceService;
 import com.etiya.ecommercedemopair3.core.util.results.DataResult;
 import com.etiya.ecommercedemopair3.core.util.results.SuccessDataResult;
+import com.etiya.ecommercedemopair3.entities.concrets.Product;
 import com.etiya.ecommercedemopair3.entities.concrets.Street;
 import com.etiya.ecommercedemopair3.repository.abstracts.CityRepository;
 import com.etiya.ecommercedemopair3.repository.abstracts.StreetRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,11 +28,12 @@ public class StreetManager implements StreetService {
     private StreetRepository streetRepository;
     private ModelMapperService modelMapperService;
     private CityRepository cityRepository;
+    private MessageSourceService messageSourceService;
 
     @Override
     public DataResult<Street> getById(int id) {
         Street response = streetRepository.findById(id).orElseThrow();
-        return new SuccessDataResult<Street>(response, Messages.Street.streetGetByIdSuccessMessage);
+        return new SuccessDataResult<Street>(response, messageSourceService.getMessages(Messages.Street.streetGetByIdSuccessMessage));
     }
 
     @Override
@@ -40,19 +46,28 @@ public class StreetManager implements StreetService {
 //        AddStreetResponse response = new AddStreetResponse(savedStreet.getId(),
 //                savedStreet.getName());
         AddStreetResponse response=modelMapperService.getMapperResponse().map(savedStreet,AddStreetResponse.class);
-        return new SuccessDataResult<AddStreetResponse>(response, Messages.Street.streetAddSuccessMessage);
+        return new SuccessDataResult<AddStreetResponse>(response, messageSourceService.getMessages(Messages.Street.streetAddSuccessMessage));
     }
 
     @Override
     public DataResult<List<GetAllStreetsResponse>> getAllDto() {
         List<GetAllStreetsResponse> response= streetRepository.getAllDto();
-        return new SuccessDataResult<List<GetAllStreetsResponse>>(response,"Sokak listelendi");
+        return new SuccessDataResult<List<GetAllStreetsResponse>>(response,messageSourceService.getMessages(Messages.Street.streetGetAllSuccessMessage));
+    }
+    @Override
+    public Page<Street> findAllWithPagination(Pageable pageable) {
+        return streetRepository.findAll(pageable);
+    }
+
+    @Override
+    public Slice<Street> findAllWithSlice(Pageable pageable) {
+        return streetRepository.getAllWithSlice(pageable);
     }
 
     private void checkIfCityExists(int id){
         boolean isExists = cityRepository.existsById(id);
         if(!isExists) {
-            throw new BusinessException(Messages.City.CityNotExistWithId);
+            throw new BusinessException(messageSourceService.getMessages(Messages.City.CityNotExistWithId));
         }
     }
 }

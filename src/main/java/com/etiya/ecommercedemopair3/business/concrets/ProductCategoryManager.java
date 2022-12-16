@@ -8,6 +8,7 @@ import com.etiya.ecommercedemopair3.business.dtos.requests.productCategory.AddPr
 import com.etiya.ecommercedemopair3.business.dtos.responses.productCategory.AddProductCategoryResponse;
 import com.etiya.ecommercedemopair3.core.util.exceptions.BusinessException;
 import com.etiya.ecommercedemopair3.core.util.mapping.ModelMapperService;
+import com.etiya.ecommercedemopair3.core.util.messages.MessageSourceService;
 import com.etiya.ecommercedemopair3.core.util.results.DataResult;
 import com.etiya.ecommercedemopair3.core.util.results.SuccessDataResult;
 import com.etiya.ecommercedemopair3.entities.concrets.ProductCategory;
@@ -24,6 +25,7 @@ public class ProductCategoryManager implements ProductCategoryService {
     private ProductService productService;
     private CategoryRepository categoryRepository;
     private ModelMapperService modelMapperService;
+    private MessageSourceService messageSourceService;
 
     @Override
     public DataResult<AddProductCategoryResponse> addProductCategory(AddProductCategoryRequest addProductCategoryRequest) {
@@ -38,13 +40,13 @@ public class ProductCategoryManager implements ProductCategoryService {
 
 //        AddProductCategoryResponse response = new AddProductCategoryResponse(savedProductCategory.getId(),savedProductCategory.getCategory().getId(), savedProductCategory.getProduct().getId());
         AddProductCategoryResponse response=modelMapperService.getMapperResponse().map(savedProductCategory,AddProductCategoryResponse.class);
-        return new SuccessDataResult<AddProductCategoryResponse>(response, Messages.ProductCategory.productCategoriesAddSuccesMessage);
+        return new SuccessDataResult<AddProductCategoryResponse>(response, messageSourceService.getMessages(Messages.ProductCategory.productCategoriesAddSuccesMessage));
     }
 
     private void checkIfCategoryExists(int id){
         boolean isExists = categoryRepository.existsById(id);
         if(!isExists) {
-            throw new BusinessException(Messages.Category.CategoryNotExistWithId);
+            throw new BusinessException(messageSourceService.getMessages(Messages.Category.CategoryNotExistWithId));
         }
     }
 

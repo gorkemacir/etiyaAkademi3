@@ -7,6 +7,7 @@ import com.etiya.ecommercedemopair3.business.dtos.requests.invoice.AddInvoiceReq
 import com.etiya.ecommercedemopair3.business.dtos.requests.order.AddOrderRequest;
 import com.etiya.ecommercedemopair3.business.dtos.responses.order.AddOrderResponse;
 import com.etiya.ecommercedemopair3.core.util.mapping.ModelMapperService;
+import com.etiya.ecommercedemopair3.core.util.messages.MessageSourceService;
 import com.etiya.ecommercedemopair3.core.util.results.DataResult;
 import com.etiya.ecommercedemopair3.core.util.results.SuccessDataResult;
 import com.etiya.ecommercedemopair3.entities.concrets.Invoice;
@@ -24,6 +25,7 @@ public class OrderManager implements OrderService {
     private OrderRepository orderRepository;
     private ModelMapperService modelMapperService;
     private InvoiceService invoiceService;
+    private MessageSourceService messageSourceService;
 
     @Override
     public DataResult<AddOrderResponse> addOrder(AddOrderRequest addOrderRequest) {
@@ -36,7 +38,7 @@ public class OrderManager implements OrderService {
         order.setOrderNumber(String.valueOf(randomNumberGenerate()));
         addInvoice(savedOrder);
 
-        return new SuccessDataResult<AddOrderResponse>(response, Messages.Order.orderAddSuccessMessage);
+        return new SuccessDataResult<AddOrderResponse>(response, messageSourceService.getMessages(Messages.Order.orderAddSuccessMessage));
     }
 
     private void addInvoice(Order savedOrder) {

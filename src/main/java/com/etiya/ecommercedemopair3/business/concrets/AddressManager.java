@@ -6,11 +6,16 @@ import com.etiya.ecommercedemopair3.business.dtos.requests.address.AddAddressReq
 import com.etiya.ecommercedemopair3.business.dtos.responses.address.AddAddressResponse;
 import com.etiya.ecommercedemopair3.core.util.exceptions.BusinessException;
 import com.etiya.ecommercedemopair3.core.util.mapping.ModelMapperService;
+import com.etiya.ecommercedemopair3.core.util.messages.MessageSourceService;
 import com.etiya.ecommercedemopair3.core.util.results.DataResult;
 import com.etiya.ecommercedemopair3.core.util.results.SuccessDataResult;
 import com.etiya.ecommercedemopair3.entities.concrets.*;
 import com.etiya.ecommercedemopair3.repository.abstracts.*;
 import lombok.AllArgsConstructor;
+import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,18 +27,19 @@ public class AddressManager implements AddressService {
     private StreetRepository streetRepository;
     private CustomerRepository customerRepository;
     private ModelMapperService modelMapperService;
+    private MessageSourceService messageSourceService;
 
 
     @Override
     public DataResult<List<Address>> getAll() {
         List<Address> response = addressRepository.findAll();
-        return new SuccessDataResult<List<Address>>(response,Messages.Address.addressListAllSuccessMessage);
+        return new SuccessDataResult<List<Address>>(response,messageSourceService.getMessages(Messages.Address.addressListAllSuccessMessage));
     }
 
     @Override
     public DataResult<Address> getById(int id) {
         Address response = addressRepository.findById(id).orElseThrow();
-        return new SuccessDataResult<Address>(response,Messages.Address.addressGetByIdSuccessMessage);
+        return new SuccessDataResult<Address>(response,messageSourceService.getMessages(Messages.Address.addressGetByIdSuccessMessage));
     }
 
     @Override
@@ -61,17 +67,27 @@ public class AddressManager implements AddressService {
         return new SuccessDataResult<AddAddressResponse>(response,Messages.Address.addressAddingSuccessMessage);
     }
 
+    @Override
+    public Page<Address> findAllWithPagination(Pageable pageable) {
+        return  addressRepository.findAll(pageable);
+    }
+
+    @Override
+    public Slice<Address> findAllWithSlice(Pageable pageable) {
+        return addressRepository.findAll(pageable);
+    }
+
     private void checkIfStreetExists(int id){
         boolean isExists = streetRepository.existsById(id);
         if(!isExists) {
-            throw new BusinessException(Messages.Street.StreetNotExistWithId);
+            throw new BusinessException(messageSourceService.getMessages(Messages.Street.StreetNotExistWithId));
         }
     }
 
     private void checkIfCustomerExists(int id){
         boolean isExists = customerRepository.existsById(id);
         if(!isExists) {
-            throw new BusinessException(Messages.Customer.CustomerNotExistWithId);
+            throw new BusinessException(messageSourceService.getMessages(Messages.Customer.CustomerNotExistWithId));
         }
     }
 

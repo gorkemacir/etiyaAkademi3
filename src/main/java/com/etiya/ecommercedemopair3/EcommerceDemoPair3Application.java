@@ -24,7 +24,7 @@ import java.util.Map;
 
 @SpringBootApplication
 @Configuration
-@EnableJpaRepositories(basePackages = {"com.etiya.ecommercedemo3.repository.abstracts"})
+@EnableJpaRepositories(basePackages = {"com.etiya.ecommercedemopair3.repository.abstracts"})
 @RestControllerAdvice
 public class EcommerceDemoPair3Application {
 
@@ -66,13 +66,26 @@ public class EcommerceDemoPair3Application {
 	}
 	@Bean
 	public ResourceBundleMessageSource bundleMessageSource(){
+		// Veritabanı bağlantısı..
+		// Dosyadan çekme işlemi..
 		ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+		// Konfigurasyonlar
+		// Veritabanına git
+		// Select * from Languages Where code='tr' and key='greetings'
+		// isteğinden dönen cevap senin çevirindir.
 		messageSource.setBasename("messages");
+		//
 		return messageSource;
 	}
+
+	// Kullanıcıdan dil tercihini header alanından al..
+	// Accept-Language
 	@Bean
 	public LocaleResolver localeResolver(){
-		AcceptHeaderLocaleResolver localeResolver=new AcceptHeaderLocaleResolver();
+		//Session,Cookie
+		// Header => Her istekte headerda bir değer varsa bunu baz al.
+		AcceptHeaderLocaleResolver localeResolver = new AcceptHeaderLocaleResolver();
+		// Accept-Language alanı boş ise default olarak 'US' alanı olarak değerlendir.
 		localeResolver.setDefaultLocale(Locale.US);
 		return localeResolver;
 	}
